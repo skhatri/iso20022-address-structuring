@@ -11,6 +11,7 @@ fastparquet==2024.11.0
 jellyfish==1.2.0
 
 [dev]
+pytest==9.0.2
 pandas==2.3.1
 geopandas==1.0.1
 scikit-learn==1.6.0
