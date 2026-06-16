@@ -199,6 +199,40 @@ class RunnerPostProcessing(BaseRunner):
 
             fuzzy_match_result.town_matches = FuzzyMatchResult.merge(fuzzy_match_result.town_matches,
                                                                      fuzzy_match_result.extended_town_matches)
+
+            if not self.config.guard_town_names:
+                crf_towns = crf_result.predictions_per_tag.get(Tag.TOWN, [])
+                synthetic_matches = []
+                for crf_town in crf_towns:
+                    already_matched = any(
+                        tm.matched == crf_town.prediction or tm.possibility == crf_town.prediction
+                        for tm in fuzzy_match_result.town_matches
+                    )
+                    if not already_matched:
+                        # Inherit origins from detected countries and suggested country so combinations work
+                        origins = set(m.origin for m in fuzzy_match_result.country_matches if m.origin)
+                        if suggested_country:
+                            origins.add(suggested_country)
+                        if not origins:
+                            origins.add("")
+                            
+                        for origin in origins:
+                            synthetic_matches.append(FuzzyMatch(
+                                start=crf_town.start,
+                                end=crf_town.end,
+                                matched=crf_town.prediction,
+                                dist=0,
+                                origin=origin,
+                                possibility=crf_town.prediction,
+                                crf_score=0.99,
+                                flags=[TownFlag.GENERATED_FROM_CRF_TOWN]
+                            ))
+                if synthetic_matches:
+                    fuzzy_match_result.town_matches = FuzzyMatchResult.merge(
+                        fuzzy_match_result.town_matches,
+                        FuzzyMatchResult(synthetic_matches)
+                    )
+
             self.match_scorer.score_matches_with_emissions(fuzzy_match_result.town_matches,
                                                            town_marginal_logprobability_by_token,
                                                            town_marginal_emission_by_token)

@@ -69,9 +69,13 @@ class ScoreComputer:
             self.town_weights.is_small_town_and_country_not_present if (
                     TownFlag.IS_SMALL_TOWN in flags and TownFlag.COUNTRY_IS_PRESENT not in flags) else 0,
             self.town_weights.country_is_present_malus if (
-                    TownFlag.COUNTRY_IS_PRESENT not in flags) else 0,
+                    TownFlag.COUNTRY_IS_PRESENT not in flags
+                    and TownFlag.SUGGESTED_COUNTRY_IS_PRESENT not in flags
+                    and TownFlag.MLP_COUNTRY_IS_PRESENT not in flags) else 0,
             self.town_weights.is_from_extended_data if (
                     TownFlag.IS_FROM_EXTENDED_DATA in flags) else 0,
+            self.town_weights.generated_from_crf_town if (
+                    TownFlag.GENERATED_FROM_CRF_TOWN in flags) else 0,
             self.town_weights.is_not_largest_town_with_name if (
                     TownFlag.IS_NOT_LARGEST_TOWN_WITH_NAME in flags) else 0,
             self.town_weights.is_inside_street if (

@@ -155,6 +155,7 @@ class PostProcessingConfig(BaseSettingsISO):
     # the combination is lacking either a country or a town
     no_town_found_mul: float = 0.7  # country found but not town
     no_country_found_mul: float = 0.1  # town found but not country
+    guard_town_names: bool = True
 
 
 class PostProcessingTownWeightsConfig(BaseSettingsISO):
@@ -178,8 +179,9 @@ class PostProcessingTownWeightsConfig(BaseSettingsISO):
     is_inside_another_lower_ranked_match: float = -0.30
     is_small_town: float = -0.20
     is_small_town_and_country_not_present: float = -0.30
-    country_is_present_malus: float = 0.10
+    country_is_present_malus: float = -0.10
     is_from_extended_data: float = -0.15
+    generated_from_crf_town: float = -0.10
     is_not_largest_town_with_name: float = -0.10
     is_inside_street: float = -0.20
     is_common_state_province_alias: float = -0.10

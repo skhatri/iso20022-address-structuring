@@ -31,6 +31,8 @@ class TownFlag(BaseFlag):
     IS_NOT_LARGEST_TOWN_WITH_NAME = "IS_NOT_LARGEST_TOWN_WITH_NAME"
     # The postcode for the town and country combo was found via the postcode matcher
     POSTCODE_FOR_TOWN_FOUND = "POSTCODE_FOR_TOWN_FOUND"
+    # The town was synthetically generated from a CRF prediction because it was not in the dictionary
+    GENERATED_FROM_CRF_TOWN = "GENERATED_FROM_CRF_TOWN"
 
 
 class CommonFlag(BaseFlag):
