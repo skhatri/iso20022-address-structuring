@@ -9,7 +9,7 @@ from torch import nn
 from pydantic import BaseModel, Field
 
 from data_structuring.components.details import Details
-from data_structuring.components.models.crf_with_marginal import CRFSecondOrder
+from data_structuring.components.models.crf_with_marginal import CRF
 from data_structuring.components.models.country_head import CountryHead
 from data_structuring.components.models.encoder_transformer import EncoderTransformer as BackboneTransformer
 from data_structuring.components.models.utils import pos_embed_1d, create_details_from_biotags
@@ -119,13 +119,13 @@ class TransformerCRF(nn.Module):
             self.country_predictor = CountryHead(embedding_dim=d_model, num_countries=len(mapping_id_to_country))
 
         # Linear projection from the embedding space to the tags space to obtain logits
-        self.projection = torch.nn.Linear(d_model, len(tags))
+        self.projection = torch.nn.Linear(d_model, len(tags), bias=False)
 
         # CRF layer on the logits (i.e., emissions)
         # self.crf = HeadCRF(
         #     num_tags=len(tags), batch_first=batch_first, is_order_2=crf_is_order_2
         # )
-        self.crf = CRFSecondOrder(num_tags=len(tags), batch_first=batch_first)
+        self.crf = CRF(num_tags=len(tags))
 
         # Loss regularisation
         self.regularisation_emissions = regularisation_emissions
@@ -189,8 +189,7 @@ class TransformerCRF(nn.Module):
         # (3) Regularisation
         reg = self.regularisation_emissions * torch.sum(emissions ** 2)
         reg += self.regularisation_transitions * torch.sum(self.crf.transitions ** 2)
-        with suppress(RuntimeError):
-            reg += self.regularisation_transitions_order_2 * torch.sum(self.crf.transitions_order_2 ** 2)
+        pass
 
         return country_loss, negative_log_likelihood, reg
 

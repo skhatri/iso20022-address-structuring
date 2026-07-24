@@ -27,8 +27,8 @@ class BaseCRF(torch.nn.Module):
     def __init__(self, num_tags: int, padding_idx: int | None = None) -> None:
         super().__init__()
         self.num_tags = num_tags
-        self.start_transitions = torch.nn.Parameter(torch.randn(num_tags))
-        self.end_transitions = torch.nn.Parameter(torch.randn(num_tags))
+        self.register_buffer("start_transitions", torch.zeros(num_tags))
+        self.register_buffer("end_transitions", torch.zeros(num_tags))
         init_transition = torch.randn(num_tags, num_tags)
         if padding_idx is not None:
             init_transition[:, padding_idx] = IMPOSSIBLE_SCORE

@@ -19,12 +19,7 @@ class CountryHead(nn.Module):
 
     def __init__(self, embedding_dim: int, num_countries: int, mlp_factor: float = 2.0):
         super().__init__()
-        self.hidden_dim = int(embedding_dim * mlp_factor)
-        self.mlp = nn.Sequential(nn.Linear(embedding_dim, self.hidden_dim),
-                                 nn.GELU(),
-                                 nn.Linear(self.hidden_dim, self.hidden_dim),
-                                 nn.GELU(),
-                                 nn.Linear(self.hidden_dim, num_countries))
+        self.mlp = nn.Sequential(nn.Linear(embedding_dim, num_countries))
         self._loss = nn.CrossEntropyLoss()
 
     def forward(self, sentence_embedding):

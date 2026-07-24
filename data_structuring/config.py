@@ -234,8 +234,9 @@ class FuzzyMatchConfig(BaseSettingsISO):
 class CRFConfig(BaseSettingsISO):
     # Model and device to use at inference time
     device: str = "cpu"
-    model_weights_path: Path = (resources.files(data_structuring.__name__) / ".." / "resources"
-                                / "models" / "CRF_with_MLP_EPOCH_1.safetensors")
+    model_weights_path: Path = (resources.files(data_structuring.__name__) / ".."
+                                / ".." / "address-fine-tune" / "output" / "checkpoints"
+                                / "CRF_bank_v1_best.safetensors")
     model_config_path: Path = (resources.files(data_structuring.__name__) / ".." / "resources"
                                / "models" / "CRF_with_MLP_EPOCH_1.config.json")
 
